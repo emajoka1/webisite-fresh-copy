@@ -171,7 +171,7 @@ const Metrics = () => {
   const metrics = [
     { value: "100", unit: "%", label: "Planning Approvals Supported", sub: "First Submission Focus" },
     { value: "24", unit: "Hrs", label: "Response Speed", sub: "Initial Scope Return" },
-    { value: "10", unit: "%", label: "BNG Baseline", sub: "Policy Compliant Minimum" },
+    { value: "500", unit: "+", label: "Projects Completed", sub: "Across UK Programmes" },
     { value: "5k", unit: "+", label: "Hectares Assessed", sub: "Across UK Development Sites" },
   ];
 
