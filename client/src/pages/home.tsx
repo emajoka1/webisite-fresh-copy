@@ -75,6 +75,17 @@ const operatingPrinciples = [
   },
 ];
 
+const getNextAvailability = () => {
+  const nextAvailability = new Date();
+  nextAvailability.setDate(nextAvailability.getDate() + 2);
+
+  return `${nextAvailability.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })}, 09:00`;
+};
+
 const KineticStrip = ({ performanceMode = false }: { performanceMode?: boolean }) => {
   const tickerItems = [...kineticLabels, ...kineticLabels];
 
@@ -305,6 +316,7 @@ const Hero = ({ performanceMode = false }: { performanceMode?: boolean }) => {
   const directorOpacity = useTransform(scrollYProgress, [0, 1], [0.34, 0.2]);
   const beamX = useTransform(scrollYProgress, [0, 1], [18, -26]);
   const beamOpacity = useTransform(scrollYProgress, [0, 1], [0.26, 0.12]);
+  const nextAvailability = getNextAvailability();
 
   useEffect(() => {
     const clearCycleTimer = () => {
@@ -497,7 +509,7 @@ const Hero = ({ performanceMode = false }: { performanceMode?: boolean }) => {
 
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3" data-testid="grid-hero-proof">
                   {[
-                    { k: "Next availability", v: "Tomorrow, 09:00" },
+                    { k: "Next availability", v: nextAvailability },
                     { k: "Mobilisation", v: "48 hours" },
                     { k: "Commission model", v: "Defined scope basis" },
                   ].map((item, i) => (
