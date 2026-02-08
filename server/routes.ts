@@ -6,6 +6,7 @@ import {
   buildRecommendedOutputs,
   computeQuotePricing,
   quoteRequestSchema,
+  resolveQuoteReviewRecipients,
   sendQuoteForInternalReview,
 } from "./quote-workflow";
 
@@ -43,10 +44,9 @@ export async function registerRoutes(
       outputs,
       quoteLetter: "",
       status: "pending_review",
-      reviewRecipients: (process.env.QUOTE_REVIEW_EMAILS || "")
-        .split(",")
-        .map((value) => value.trim())
-        .filter(Boolean),
+      reviewRecipients: resolveQuoteReviewRecipients(
+        process.env.QUOTE_REVIEW_EMAILS,
+      ),
     });
 
     const quoteLetter = buildQuoteLetter(draft.id, input, pricing, outputs);

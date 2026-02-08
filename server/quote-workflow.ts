@@ -1,4 +1,5 @@
 import { z } from "zod";
+import PDFDocument from "pdfkit";
 
 export const quoteRequestSchema = z.object({
   service: z.enum(["pea", "pra", "bng", "species"]),
@@ -36,6 +37,10 @@ type ContextConfig = {
   weight: number;
   multiplier: number;
 };
+
+const COYNE_COMPANY_NAME = "Coyne Environmental";
+const COYNE_COMPANY_ADDRESS = "5 Philosophers Gate, Ashwell, SG7 5DL";
+const DEFAULT_REVIEW_EMAIL = "emajoka@coyneenvironmental.co.uk";
 
 const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
   pea: {
@@ -131,6 +136,17 @@ export type QuoteReviewEmailResult = {
   error?: string;
 };
 
+export const resolveQuoteReviewRecipients = (rawRecipients?: string) => {
+  const configuredRecipients = (rawRecipients || "")
+    .split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+
+  return Array.from(
+    new Set([DEFAULT_REVIEW_EMAIL, ...configuredRecipients]),
+  );
+};
+
 const roundToNearest = (value: number, nearest: number) =>
   Math.round(value / nearest) * nearest;
 
@@ -140,6 +156,13 @@ const formatCurrency = (value: number) =>
     currency: "GBP",
     maximumFractionDigits: 0,
   }).format(value);
+
+const formatDate = (value: string | Date) =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(typeof value === "string" ? new Date(value) : value);
 
 const getDaysUntilDeadline = (requiredBy?: string | null) => {
   if (!requiredBy) return null;
@@ -244,7 +267,7 @@ export const buildQuoteLetter = (
 
   const lines = [
     `Quote Draft Reference: Q-${id.slice(0, 8).toUpperCase()}`,
-    `Prepared: ${new Date().toISOString()}`,
+    `Prepared: ${formatDate(new Date())}`,
     "",
     "Client Request",
     `Project: ${input.projectName}`,
@@ -254,7 +277,7 @@ export const buildQuoteLetter = (
     `Site context: ${context.label}`,
     `Site size: ${input.hectares.toFixed(1)} ha`,
     `Urgency: ${input.isUrgent ? "Priority mobilisation requested" : "Standard mobilisation"}`,
-    `Required by: ${input.requiredBy || "Not provided"}`,
+    `Required by: ${input.requiredBy ? formatDate(input.requiredBy) : "Not provided"}`,
     "",
     "Proposed Scope Outputs",
     ...outputs.map((output) => `- ${output}`),
@@ -286,16 +309,291 @@ const escapeHtml = (value: string) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
+const buildQuoteReference = (id: string) => `Q-${id.slice(0, 8).toUpperCase()}`;
+
+const buildQuoteReviewPdf = async (draft: QuoteDraft): Promise<Buffer> => {
+  const reference = buildQuoteReference(draft.id);
+  const service = SERVICE_CONFIG[draft.request.service];
+  const stage = STAGE_CONFIG[draft.request.stage];
+  const context = CONTEXT_CONFIG[draft.request.siteContext];
+
+  const theme = {
+    brand: "#13231B",
+    signal: "#B7DF63",
+    ink: "#162219",
+    muted: "#55695C",
+    panel: "#EEF3ED",
+    stroke: "#D8E0D8",
+    white: "#FFFFFF",
+  } as const;
+
+  const doc = new PDFDocument({
+    size: "A4",
+    margins: { top: 56, right: 56, bottom: 56, left: 56 },
+    info: {
+      Title: `${COYNE_COMPANY_NAME} Internal Quote Review ${reference}`,
+      Author: COYNE_COMPANY_NAME,
+      Subject: "Internal quote review letter",
+    },
+  });
+
+  const chunks: Buffer[] = [];
+  doc.on("data", (chunk: Buffer | Uint8Array) => {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  });
+
+  const pdfComplete = new Promise<Buffer>((resolve, reject) => {
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+  });
+
+  const left = doc.page.margins.left;
+  const contentWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+  const pageBottom = () => doc.page.height - doc.page.margins.bottom;
+  let y = doc.page.margins.top;
+
+  const drawHeader = (continuation = false) => {
+    doc.rect(0, 0, doc.page.width, 108).fill(theme.brand);
+
+    doc
+      .fillColor(theme.signal)
+      .font("Helvetica-Bold")
+      .fontSize(12)
+      .text(COYNE_COMPANY_NAME.toUpperCase(), left, 28, { characterSpacing: 1.8 });
+
+    doc
+      .fillColor(theme.white)
+      .font("Helvetica")
+      .fontSize(9)
+      .text("Internal Quote Review Letter", left, 47);
+
+    doc
+      .fillColor("#D7E2DC")
+      .font("Helvetica")
+      .fontSize(9)
+      .text(COYNE_COMPANY_ADDRESS, left, 61);
+
+    doc
+      .fillColor(theme.white)
+      .font("Helvetica-Bold")
+      .fontSize(9)
+      .text(reference, left + contentWidth - 170, 28, { width: 170, align: "right" });
+
+    doc
+      .fillColor("#D7E2DC")
+      .font("Helvetica")
+      .fontSize(9)
+      .text(formatDate(draft.submittedAtIso), left + contentWidth - 170, 44, {
+        width: 170,
+        align: "right",
+      });
+
+    if (continuation) {
+      doc
+        .fillColor("#D7E2DC")
+        .font("Helvetica")
+        .fontSize(8)
+        .text("Continuation", left + contentWidth - 170, 60, {
+          width: 170,
+          align: "right",
+        });
+    }
+
+    doc
+      .strokeColor("#335141")
+      .lineWidth(1)
+      .moveTo(left, 94)
+      .lineTo(left + contentWidth, 94)
+      .stroke();
+
+    y = 114;
+  };
+
+  const ensureSpace = (height: number) => {
+    if (y + height <= pageBottom()) return;
+    doc.addPage();
+    drawHeader(true);
+  };
+
+  const drawSectionHeading = (title: string, subtitle?: string) => {
+    ensureSpace(subtitle ? 48 : 34);
+
+    doc.fillColor(theme.brand).font("Helvetica-Bold").fontSize(12).text(title, left, y);
+    y += 16;
+
+    if (subtitle) {
+      doc
+        .fillColor(theme.muted)
+        .font("Helvetica")
+        .fontSize(9)
+        .text(subtitle, left, y, { width: contentWidth });
+      y += 15;
+    }
+
+    doc
+      .strokeColor(theme.stroke)
+      .lineWidth(0.8)
+      .moveTo(left, y)
+      .lineTo(left + contentWidth, y)
+      .stroke();
+    y += 8;
+  };
+
+  const drawDetailRow = (label: string, value: string) => {
+    const labelWidth = 170;
+    const columnGap = 14;
+    const valueWidth = contentWidth - labelWidth - columnGap;
+
+    doc.font("Helvetica-Bold").fontSize(9);
+    const labelHeight = doc.heightOfString(label, { width: labelWidth });
+    doc.font("Helvetica").fontSize(10);
+    const valueHeight = doc.heightOfString(value, { width: valueWidth });
+
+    const rowHeight = Math.max(labelHeight, valueHeight);
+    ensureSpace(rowHeight + 12);
+
+    doc
+      .fillColor(theme.muted)
+      .font("Helvetica-Bold")
+      .fontSize(9)
+      .text(label, left, y, { width: labelWidth });
+
+    doc
+      .fillColor(theme.ink)
+      .font("Helvetica")
+      .fontSize(10)
+      .text(value, left + labelWidth + columnGap, y, { width: valueWidth });
+
+    y += rowHeight + 4;
+    doc
+      .strokeColor(theme.stroke)
+      .lineWidth(0.8)
+      .moveTo(left, y)
+      .lineTo(left + contentWidth, y)
+      .stroke();
+    y += 6;
+  };
+
+  const drawBulletList = (items: string[]) => {
+    for (const item of items) {
+      const line = `- ${item}`;
+      doc.font("Helvetica").fontSize(10);
+      const lineHeight = doc.heightOfString(line, { width: contentWidth });
+      ensureSpace(lineHeight + 4);
+      doc.fillColor(theme.ink).text(line, left, y, { width: contentWidth });
+      y += lineHeight + 4;
+    }
+    y += 4;
+  };
+
+  drawHeader(false);
+
+  ensureSpace(92);
+  doc.roundedRect(left, y, contentWidth, 84, 8).fillAndStroke(theme.panel, theme.stroke);
+  doc
+    .fillColor(theme.brand)
+    .font("Helvetica-Bold")
+    .fontSize(11)
+    .text("Internal review draft", left + 14, y + 12);
+  doc
+    .fillColor(theme.muted)
+    .font("Helvetica")
+    .fontSize(9)
+    .text(
+      "Prepared for Coyne internal review before any client-facing quotation is released.",
+      left + 14,
+      y + 31,
+      { width: contentWidth - 28 },
+    );
+  doc
+    .fillColor(theme.ink)
+    .font("Helvetica-Bold")
+    .fontSize(10)
+    .text(
+      draft.request.isUrgent
+        ? "Priority mobilisation requested"
+        : "Standard mobilisation route",
+      left + 14,
+      y + 58,
+    );
+  y += 100;
+
+  drawSectionHeading("Project brief");
+  drawDetailRow("Project", draft.request.projectName);
+  drawDetailRow("Contact email", draft.request.contactEmail);
+  drawDetailRow("Service", service.label);
+  drawDetailRow("Planning stage", stage.label);
+  drawDetailRow("Site context", context.label);
+  drawDetailRow("Site area", `${draft.request.hectares.toFixed(1)} ha`);
+  drawDetailRow(
+    "Required by",
+    draft.request.requiredBy ? formatDate(draft.request.requiredBy) : "Not provided",
+  );
+
+  drawSectionHeading(
+    "Proposed scope outputs",
+    "Output set positioned for planning certainty and decision velocity.",
+  );
+  drawBulletList(draft.outputs);
+
+  drawSectionHeading(
+    "Commercial model (internal)",
+    "For internal sign-off only. Do not forward externally.",
+  );
+  drawDetailRow("Base fee", formatCurrency(draft.pricing.baseFee));
+  drawDetailRow("Calculated fee", formatCurrency(draft.pricing.calculatedFee));
+  drawDetailRow("Contingency", formatCurrency(draft.pricing.contingency));
+  drawDetailRow("Recommended fee", formatCurrency(draft.pricing.recommendedFee));
+  drawDetailRow(
+    "Commercial range",
+    `${formatCurrency(draft.pricing.feeRangeLow)} - ${formatCurrency(draft.pricing.feeRangeHigh)}`,
+  );
+  drawDetailRow(
+    "Lead time",
+    `${draft.pricing.leadDaysMin}-${draft.pricing.leadDaysMax} working days`,
+  );
+  drawDetailRow("Complexity score", String(draft.pricing.complexityScore));
+
+  if (draft.pricing.notes.length > 0) {
+    drawSectionHeading("Commercial notes");
+    drawBulletList(draft.pricing.notes);
+  }
+
+  drawSectionHeading("Review actions");
+  drawBulletList([
+    "Validate assumptions and scope coverage.",
+    "Confirm final fee position and margin.",
+    "Approve release of client-facing quote letter.",
+  ]);
+
+  ensureSpace(34);
+  doc
+    .strokeColor(theme.stroke)
+    .lineWidth(0.8)
+    .moveTo(left, y + 6)
+    .lineTo(left + contentWidth, y + 6)
+    .stroke();
+  doc
+    .fillColor(theme.muted)
+    .font("Helvetica")
+    .fontSize(8)
+    .text(COYNE_COMPANY_ADDRESS, left, y + 14, { width: contentWidth / 2 });
+  doc
+    .text(`Reference ${reference} | Prepared ${formatDate(draft.submittedAtIso)}`, left + contentWidth / 2, y + 14, {
+      width: contentWidth / 2,
+      align: "right",
+    });
+
+  doc.end();
+  return pdfComplete;
+};
+
 export async function sendQuoteForInternalReview(
   draft: QuoteDraft,
 ): Promise<QuoteReviewEmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.QUOTE_FROM_EMAIL || "quotes@coyne.co.uk";
-  const toRaw = process.env.QUOTE_REVIEW_EMAILS || "";
-  const recipients = toRaw
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean);
+  const from = process.env.QUOTE_FROM_EMAIL || "quotes@coyneenvironmental.co.uk";
+  const recipients = resolveQuoteReviewRecipients(process.env.QUOTE_REVIEW_EMAILS);
 
   if (!apiKey) {
     return {
@@ -304,61 +602,77 @@ export async function sendQuoteForInternalReview(
     };
   }
 
-  if (recipients.length === 0) {
+  try {
+    const reference = buildQuoteReference(draft.id);
+    const service = SERVICE_CONFIG[draft.request.service];
+    const stage = STAGE_CONFIG[draft.request.stage];
+    const context = CONTEXT_CONFIG[draft.request.siteContext];
+
+    const pdfBuffer = await buildQuoteReviewPdf(draft);
+    const subject = `Quote Review Required: ${draft.request.projectName} (${reference})`;
+
+    const html = `
+      <div style="font-family:Arial,sans-serif;line-height:1.55;color:#162219;max-width:760px;margin:0 auto;padding:20px;background:#f5f7f2;border:1px solid #dae2d9">
+        <div style="background:#13231B;padding:18px 20px 16px;color:#ffffff">
+          <div style="font-size:12px;letter-spacing:0.18em;color:#B7DF63;font-weight:700;margin-bottom:8px">${COYNE_COMPANY_NAME.toUpperCase()}</div>
+          <div style="font-size:11px;margin-bottom:4px">Internal Quote Review Required</div>
+          <div style="font-size:11px;color:#D7E2DC">${escapeHtml(COYNE_COMPANY_ADDRESS)}</div>
+        </div>
+        <div style="padding:18px 20px;background:#ffffff;border-left:1px solid #dae2d9;border-right:1px solid #dae2d9;border-bottom:1px solid #dae2d9">
+          <p style="margin:0 0 14px">A quote request has been drafted and is ready for internal sign-off. The branded PDF review letter is attached.</p>
+          <p style="margin:0 0 6px"><strong>Reference:</strong> ${escapeHtml(reference)}</p>
+          <p style="margin:0 0 6px"><strong>Project:</strong> ${escapeHtml(draft.request.projectName)}</p>
+          <p style="margin:0 0 6px"><strong>Contact:</strong> ${escapeHtml(draft.request.contactEmail)}</p>
+          <p style="margin:0 0 6px"><strong>Service:</strong> ${escapeHtml(service.label)}</p>
+          <p style="margin:0 0 6px"><strong>Planning stage:</strong> ${escapeHtml(stage.label)}</p>
+          <p style="margin:0 0 16px"><strong>Context:</strong> ${escapeHtml(context.label)}</p>
+          <p style="margin:0;padding:12px 14px;background:#EEF3ED;border:1px solid #D8E0D8">
+            <strong>Review flow:</strong> validate scope, confirm final fee/margin, then approve client-facing release.
+          </p>
+        </div>
+      </div>
+    `;
+
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: recipients,
+        subject,
+        html,
+        attachments: [
+          {
+            filename: `Coyne-Quote-Review-${reference}.pdf`,
+            content: pdfBuffer.toString("base64"),
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      return {
+        delivered: false,
+        error: `Email provider error (${response.status}): ${body}`,
+      };
+    }
+
+    const payload = (await response.json()) as { id?: string };
+    return {
+      delivered: true,
+      providerId: payload.id,
+    };
+  } catch (error) {
     return {
       delivered: false,
-      error: "QUOTE_REVIEW_EMAILS is not configured.",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unknown error while preparing review email.",
     };
   }
-
-  const subject = `Quote Review Required: ${draft.request.projectName} (Q-${draft.id
-    .slice(0, 8)
-    .toUpperCase()})`;
-
-  const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.5;color:#121826">
-      <h2 style="margin:0 0 8px">Quote Review Required</h2>
-      <p style="margin:0 0 16px">A new quote request has been drafted and is awaiting internal review.</p>
-      <p style="margin:0 0 4px"><strong>Project:</strong> ${escapeHtml(
-        draft.request.projectName,
-      )}</p>
-      <p style="margin:0 0 4px"><strong>Contact:</strong> ${escapeHtml(
-        draft.request.contactEmail,
-      )}</p>
-      <p style="margin:0 0 16px"><strong>Reference:</strong> Q-${draft.id
-        .slice(0, 8)
-        .toUpperCase()}</p>
-      <pre style="white-space:pre-wrap;background:#f6f8ff;padding:16px;border-radius:8px;border:1px solid #d8e0f7">${escapeHtml(
-        draft.quoteLetter,
-      )}</pre>
-    </div>
-  `;
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: recipients,
-      subject,
-      html,
-    }),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    return {
-      delivered: false,
-      error: `Email provider error (${response.status}): ${body}`,
-    };
-  }
-
-  const payload = (await response.json()) as { id?: string };
-  return {
-    delivered: true,
-    providerId: payload.id,
-  };
 }
