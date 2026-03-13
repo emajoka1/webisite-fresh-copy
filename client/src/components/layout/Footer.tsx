@@ -23,11 +23,11 @@ export const Footer = () => {
               <span className="display-title block text-[var(--color-signal)]">Delivery.</span>
             </h2>
             <a
-              href="mailto:hello@coyne.co.uk"
+              href="mailto:kcoyne@coyneenvironmental.co.uk"
               className="inline-flex items-center gap-3 text-xl md:text-3xl font-medium hover:text-primary transition-colors underline decoration-1 underline-offset-8"
               data-testid="link-footer-email"
             >
-              hello@coyne.co.uk
+              kcoyne@coyneenvironmental.co.uk
               <ArrowUpRight size={20} />
             </a>
           </div>
@@ -47,9 +47,7 @@ export const Footer = () => {
           <div className="md:col-span-2">
             <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary mb-7">Socials</h4>
             <ul className="space-y-4 font-bold text-sm tracking-wide uppercase">
-              <li><a href="#" rel="noopener noreferrer" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">LinkedIn <ArrowUpRight size={14}/></a></li>
-              <li><a href="#" rel="noopener noreferrer" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">Instagram <ArrowUpRight size={14}/></a></li>
-              <li><a href="#" rel="noopener noreferrer" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">Twitter <ArrowUpRight size={14}/></a></li>
+              <li><a href="https://www.linkedin.com/company/coyne-environmental/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">LinkedIn <ArrowUpRight size={14}/></a></li>
             </ul>
           </div>
           
