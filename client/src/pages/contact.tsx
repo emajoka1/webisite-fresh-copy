@@ -36,7 +36,7 @@ const FastTrackModule = () => {
       label: "PRA (Bats)",
       desc: "Roost risk screening and survey route planning",
       baseDays: 7,
-      outputs: ["Roost risk classification", "Targeted survey mobilisation plan"],
+      outputs: ["Roost risk classification", "Targeted survey delivery plan"],
       weight: 1,
     },
     bng: {
@@ -119,7 +119,7 @@ const FastTrackModule = () => {
 
   const leadMin = Math.max(3, serviceData[service].baseDays + Math.round(complexityScore * 0.7) - (isUrgent ? 2 : 0));
   const leadMax = leadMin + 3;
-  const mobilisation = isUrgent ? "Priority mobilisation within 48 hours" : "Mobilisation typically within 5 working days";
+  const mobilisation = isUrgent ? "Priority delivery within 48 hours" : "Delivery typically within 5 working days";
 
   const deadlineDate = requiredBy ? new Date(requiredBy) : null;
   const today = new Date();
@@ -147,7 +147,7 @@ const FastTrackModule = () => {
     `Route: ${routeModel}`,
     `Team model: ${teamModel}`,
     `Indicative turnaround: ${leadMin} to ${leadMax} working days`,
-    `Mobilisation: ${mobilisation}`,
+    `Delivery: ${mobilisation}`,
     requiredBy ? `Required by: ${requiredBy}` : "Required by: not provided",
     projectName ? `Project: ${projectName}` : "Project: not provided",
     contactEmail ? `Contact email: ${contactEmail}` : "Contact email: not provided",
@@ -332,14 +332,14 @@ const FastTrackModule = () => {
             {/* Urgency & Deadline */}
                 <div className="flex items-center justify-between p-6 border border-foreground/10 bg-background/60">
                   <div className="flex flex-col">
-                      <span className="text-xs font-bold uppercase tracking-wide text-foreground">Priority Mobilisation</span>
+                      <span className="text-xs font-bold uppercase tracking-wide text-foreground">Priority Delivery</span>
                       <span className="micro-detail text-foreground/55 mt-1">Fast-tracked survey scheduling</span>
                   </div>
                   <button
                       onClick={() => setIsUrgent(!isUrgent)}
                       role="switch"
                       aria-checked={isUrgent}
-                      aria-label="Toggle priority mobilisation"
+                      aria-label="Toggle priority delivery"
                       className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${isUrgent ? 'bg-primary' : 'bg-foreground/10'}`}
                       data-testid="button-toggle-priority-mobilisation"
                   >

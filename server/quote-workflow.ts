@@ -63,7 +63,7 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
     weight: 1,
     defaultOutputs: [
       "Roost risk classification",
-      "Targeted survey mobilisation plan",
+      "Targeted survey delivery plan",
     ],
   },
   bng: {
@@ -224,7 +224,7 @@ export const computeQuotePricing = (input: QuoteRequestInput): QuotePricing => {
   const leadDaysMax = leadDaysMin + 3;
 
   const notes: string[] = [];
-  if (input.isUrgent) notes.push("Urgency uplift applied for priority mobilisation.");
+  if (input.isUrgent) notes.push("Urgency uplift applied for priority delivery.");
   if (deadlineDays !== null && deadlineDays < leadDaysMin) {
     notes.push("Deadline is tighter than modelled lead time; sequencing risk is elevated.");
   }
@@ -279,7 +279,7 @@ export const buildQuoteLetter = (
     `Stage: ${stage.label}`,
     `Site context: ${context.label}`,
     `Site size: ${input.hectares.toFixed(1)} ha`,
-    `Urgency: ${input.isUrgent ? "Priority mobilisation requested" : "Standard mobilisation"}`,
+    `Urgency: ${input.isUrgent ? "Priority delivery requested" : "Standard delivery"}`,
     `Required by: ${input.requiredBy ? formatDate(input.requiredBy) : "Not provided"}`,
     "",
     "Proposed Scope Outputs",
@@ -514,8 +514,8 @@ const buildQuoteReviewPdf = async (draft: QuoteDraft): Promise<Buffer> => {
     .fontSize(10)
     .text(
       draft.request.isUrgent
-        ? "Priority mobilisation requested"
-        : "Standard mobilisation route",
+        ? "Priority delivery requested"
+        : "Standard delivery route",
       left + 14,
       y + 58,
     );
