@@ -226,7 +226,7 @@ const WhyUs = () => {
   return (
     <motion.section
       {...sectionReveal}
-      className="bg-background text-foreground py-32 px-6 md:px-12 relative overflow-hidden border-b border-foreground/10"
+      className="bg-background text-foreground py-16 md:py-32 px-6 md:px-12 relative overflow-hidden border-b border-foreground/10"
     >
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-[90px]" />
@@ -667,11 +667,11 @@ const SelectedWorks = () => {
   return (
     <motion.section
       {...sectionReveal}
-      className="py-32 bg-secondary text-secondary-foreground relative z-10 overflow-hidden"
+      className="py-16 md:py-32 bg-secondary text-secondary-foreground relative z-10 overflow-hidden"
     >
       <div className="pointer-events-none absolute inset-0 premium-grid-mesh opacity-[0.14]" />
       <div className="container mx-auto px-6 md:px-12">
-        <div className="flex items-center gap-4 mb-24">
+        <div className="flex items-center gap-4 mb-12 md:mb-24">
           <span className="label-pill inline-flex text-primary border-primary/35 bg-primary/10">Selected Works</span>
         </div>
 
@@ -788,7 +788,7 @@ export default function Home() {
 
         <motion.section
           {...sectionReveal}
-          className="py-32 px-6 md:px-12 bg-background text-center relative overflow-hidden grain border-t border-foreground/10 section-divider-line"
+          className="py-16 md:py-32 px-6 md:px-12 bg-background text-center relative overflow-hidden grain border-t border-foreground/10 section-divider-line"
         >
           <div className="absolute inset-0 opacity-5 pointer-events-none mix-blend-multiply" style={{ backgroundImage: `url(${fluidTexture})`, backgroundSize: "cover" }}></div>
           <div className="orb-soft h-72 w-72 bg-primary/10 -top-16 left-1/2 -translate-x-1/2" />

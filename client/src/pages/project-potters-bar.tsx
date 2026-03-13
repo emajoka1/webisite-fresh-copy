@@ -79,9 +79,9 @@ export default function ProjectPottersBar() {
         </section>
 
         {/* The Narrative */}
-        <section className="py-32 px-6 md:px-12 bg-secondary text-secondary-foreground border-b border-secondary-foreground/12">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16">
-                <div className="md:col-span-5 sticky top-32 h-fit">
+        <section className="py-16 md:py-32 px-6 md:px-12 bg-secondary text-secondary-foreground border-b border-secondary-foreground/12">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+                <div className="md:col-span-5 md:sticky md:top-24 h-fit">
                     <h2 className="text-4xl font-bold uppercase tracking-tight mb-8">The <span className="text-[var(--color-primary)]">Challenge</span></h2>
                     <p className="text-secondary-foreground/66 text-lg leading-relaxed mb-8">
                         Potters Bar Football Club required a new 3G pitch to secure their future. Located in a dense residential area and bounded by private gardens, the site offered minimal scope for ecological expansion.
@@ -106,7 +106,7 @@ export default function ProjectPottersBar() {
 
                 <div className="md:col-span-7 space-y-24">
                     <div>
-                        <img src={meadowDark} alt="Enhanced Grassland Habitat" className="w-full h-[400px] object-cover grayscale opacity-80 mb-8" />
+                        <img src={meadowDark} alt="Enhanced Grassland Habitat" className="w-full h-[220px] md:h-[400px] object-cover grayscale opacity-80 mb-8" />
                         <h3 className="text-2xl font-bold uppercase tracking-tight mb-6 flex items-center gap-4">
                             <ShieldCheck className="text-[var(--color-primary)]" /> Strategic Intervention
                         </h3>
@@ -169,9 +169,9 @@ export default function ProjectPottersBar() {
         </section>
 
         {/* The Strategy Details */}
-        <section className="py-32 px-6 md:px-12 bg-secondary/95 text-secondary-foreground">
+        <section className="py-16 md:py-32 px-6 md:px-12 bg-secondary/95 text-secondary-foreground">
             <div className="max-w-7xl mx-auto">
-                <div className="mb-24">
+                <div className="mb-12 md:mb-24">
                      <h2 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-8 text-secondary-foreground">
                         Delivery <br/>
                         <span className="text-[var(--color-primary)]">Strategy.</span>

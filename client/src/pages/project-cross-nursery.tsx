@@ -90,10 +90,10 @@ export default function ProjectCrossNursery() {
         </section>
 
         {/* Strategic Overview */}
-        <section className="py-32 px-6 md:px-12 border-b border-foreground/10 bg-background text-foreground">
+        <section className="py-16 md:py-32 px-6 md:px-12 border-b border-foreground/10 bg-background text-foreground">
             <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
-                    <div className="md:col-span-4 sticky top-32 h-fit">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+                    <div className="md:col-span-4 md:sticky md:top-24 h-fit">
                         <h2 className="text-4xl md:text-5xl leading-[0.92] mb-8">
                           <span className="editorial-title">The brief,</span> <span className="text-primary editorial-title">strategically framed.</span>
                         </h2>
@@ -157,10 +157,9 @@ export default function ProjectCrossNursery() {
         </section>
 
         {/* Visual Interlude */}
-        <section className="relative h-[86vh] w-full overflow-hidden bg-secondary text-secondary-foreground border-y border-secondary-foreground/12" data-testid="section-cross-nursery-interlude">
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 grid grid-cols-12 gap-0">
-              <div className="relative col-span-7 h-[86vh] overflow-hidden" data-testid="panel-cross-nursery-interlude-left">
+        <section className="relative w-full overflow-hidden bg-secondary text-secondary-foreground border-y border-secondary-foreground/12" data-testid="section-cross-nursery-interlude">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-0">
+              <div className="relative col-span-1 md:col-span-7 h-[55vh] md:h-[86vh] overflow-hidden" data-testid="panel-cross-nursery-interlude-left">
                 <img
                   src={pondImg}
                   alt="Pond restoration and wildflower margin"
@@ -169,19 +168,19 @@ export default function ProjectCrossNursery() {
                 />
                 <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_18%_18%,rgba(198,255,46,0.32),transparent_55%),linear-gradient(to_top,rgba(20,26,43,0.93),rgba(20,26,43,0.4),transparent)]" />
 
-                <div className="absolute left-8 md:left-12 bottom-10 md:bottom-14 max-w-xl" data-testid="block-cross-nursery-interlude-caption">
+                <div className="absolute left-6 md:left-12 bottom-8 md:bottom-14 max-w-xl" data-testid="block-cross-nursery-interlude-caption">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="micro-eyebrow text-[var(--color-primary)]" data-testid="text-cross-nursery-interlude-index">03</span>
                     <span className="h-[1px] w-10 bg-secondary-foreground/24" aria-hidden="true" />
                     <span className="micro-eyebrow text-secondary-foreground/58" data-testid="text-cross-nursery-interlude-label">Aquatic edge</span>
                   </div>
-                  <p className="text-secondary-foreground/88 text-lg md:text-xl leading-relaxed font-light" data-testid="text-cross-nursery-interlude-copy">
+                  <p className="text-secondary-foreground/88 text-base md:text-xl leading-relaxed font-light" data-testid="text-cross-nursery-interlude-copy">
                     Pond restoration, reedbed structure, and a species-rich margin—designed as habitat first, and experienced as landscape.
                   </p>
                 </div>
               </div>
 
-              <div className="relative col-span-5 h-[86vh] border-l border-secondary-foreground/12" data-testid="panel-cross-nursery-interlude-right">
+              <div className="relative col-span-1 md:col-span-5 h-[40vh] md:h-[86vh] border-t md:border-t-0 md:border-l border-secondary-foreground/12" data-testid="panel-cross-nursery-interlude-right">
                 <div className="absolute inset-0 grid grid-rows-2">
                   <div className="relative overflow-hidden" data-testid="panel-cross-nursery-interlude-top">
                     <img
@@ -215,21 +214,19 @@ export default function ProjectCrossNursery() {
                 </div>
 
                 <div className="absolute inset-0 pointer-events-none flex items-center justify-center" data-testid="overlay-cross-nursery-interlude-title">
-                  <h2 className="text-[14vw] font-black uppercase tracking-tighter text-secondary-foreground mix-blend-overlay opacity-45">Phased</h2>
+                  <h2 className="text-[14vw] md:text-[8vw] font-black uppercase tracking-tighter text-secondary-foreground mix-blend-overlay opacity-45">Phased</h2>
                 </div>
               </div>
-            </div>
-
-            <div className="absolute inset-0 opacity-[0.10] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E")` }} />
           </div>
 
+          <div className="absolute inset-0 opacity-[0.10] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E")` }} />
           <div className="absolute inset-0 border border-secondary-foreground/12 pointer-events-none" aria-hidden="true" />
         </section>
 
         {/* The 30-Year Plan */}
-        <section className="py-32 px-6 md:px-12 bg-secondary/95 text-secondary-foreground border-b border-secondary-foreground/12 relative overflow-hidden">
+        <section className="py-16 md:py-32 px-6 md:px-12 bg-secondary/95 text-secondary-foreground border-b border-secondary-foreground/12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto relative z-10">
-                <div className="mb-24">
+                <div className="mb-12 md:mb-24">
                      <h2 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-8 text-secondary-foreground">
                         Long-Term <br/>
                         <span className="text-[var(--color-primary)]">Stewardship.</span>
