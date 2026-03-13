@@ -17,7 +17,7 @@ export const Footer = () => {
             <div className="label-pill inline-flex mb-7 text-secondary-foreground/82 border-secondary-foreground/22 bg-secondary-foreground/8">
               Ready To Mobilise
             </div>
-            <h2 className="text-[13vw] md:text-[5.2vw] leading-[0.86] tracking-[-0.045em] mb-10">
+            <h2 className="text-[10vw] sm:text-[8vw] md:text-[5.2vw] leading-[0.86] tracking-[-0.045em] mb-10">
               <span className="section-lead block text-secondary-foreground/95 normal-case">Design certainty for</span>
               <span className="display-title block">Nature-Positive</span>
               <span className="display-title block text-[var(--color-signal)]">Delivery.</span>
@@ -83,7 +83,7 @@ export const Footer = () => {
             Planning-first ecology for fast-moving programmes.
           </div>
 
-          <div className="text-[18vw] md:text-[12vw] font-black leading-none tracking-[-0.08em] text-secondary-foreground/[0.045] select-none pointer-events-none absolute bottom-[-6vw] right-0">
+          <div className="text-[14vw] md:text-[12vw] font-black leading-none tracking-[-0.08em] text-secondary-foreground/[0.045] select-none pointer-events-none absolute bottom-[-6vw] right-0">
             COYNE
           </div>
         </div>

@@ -267,7 +267,7 @@ export const Navbar = () => {
             <Link 
                 key={item.name} 
                 href={item.href}
-                className="text-5xl sm:text-6xl md:text-9xl font-black uppercase tracking-[-0.05em] text-secondary-foreground/20 hover:text-secondary-foreground transition-all duration-500 block w-fit leading-[0.82] menu-item hover-underline"
+                className="text-4xl sm:text-5xl md:text-9xl font-black uppercase tracking-[-0.05em] text-secondary-foreground/20 hover:text-secondary-foreground transition-all duration-500 block w-fit leading-[0.82] menu-item hover-underline"
                 data-text={item.name}
                 style={{ 
                 transitionDelay: `${i * 60}ms`
