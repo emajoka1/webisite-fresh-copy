@@ -6,10 +6,11 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import contactHero from "@/assets/images/contact-hero.png";
 
+type ServiceKey = "pea" | "pra" | "bng" | "species";
+type StageKey = "appraisal" | "prePlanning" | "validation" | "postConsent";
+type ContextKey = "urban" | "edge" | "strategic";
+
 const FastTrackModule = () => {
-  type ServiceKey = "pea" | "pra" | "bng" | "species";
-  type StageKey = "appraisal" | "prePlanning" | "validation" | "postConsent";
-  type ContextKey = "urban" | "edge" | "strategic";
 
   const [service, setService] = useState<ServiceKey>("pea");
   const [stage, setStage] = useState<StageKey>("prePlanning");
@@ -159,7 +160,7 @@ const FastTrackModule = () => {
     try {
       await navigator.clipboard.writeText(requestSummary);
       setBriefCopied(true);
-      window.setTimeout(() => setBriefCopied(false), 2000);
+      setTimeout(() => setBriefCopied(false), 2000);
     } catch {
       setBriefCopied(false);
     }
@@ -334,8 +335,11 @@ const FastTrackModule = () => {
                       <span className="text-xs font-bold uppercase tracking-wide text-foreground">Priority Mobilisation</span>
                       <span className="micro-detail text-foreground/55 mt-1">Fast-tracked survey scheduling</span>
                   </div>
-                  <button 
+                  <button
                       onClick={() => setIsUrgent(!isUrgent)}
+                      role="switch"
+                      aria-checked={isUrgent}
+                      aria-label="Toggle priority mobilisation"
                       className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${isUrgent ? 'bg-primary' : 'bg-foreground/10'}`}
                       data-testid="button-toggle-priority-mobilisation"
                   >
@@ -346,17 +350,23 @@ const FastTrackModule = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input
                   type="text"
+                  name="projectName"
+                  autoComplete="off"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                   placeholder="Project name"
+                  aria-label="Project name"
                   className="h-12 rounded-xl border border-foreground/12 bg-background/60 px-4 text-sm text-foreground placeholder:text-foreground/45 focus:outline-none focus:ring-2 focus:ring-primary/35"
                   data-testid="input-project-name"
                 />
                 <input
                   type="email"
+                  name="contactEmail"
+                  autoComplete="email"
                   value={contactEmail}
                   onChange={(e) => setContactEmail(e.target.value)}
                   placeholder="Contact email"
+                  aria-label="Contact email address"
                   className="h-12 rounded-xl border border-foreground/12 bg-background/60 px-4 text-sm text-foreground placeholder:text-foreground/45 focus:outline-none focus:ring-2 focus:ring-primary/35"
                   data-testid="input-contact-email"
                 />
@@ -470,7 +480,7 @@ export default function Contact() {
       <main className="hero-shell min-h-screen pt-28 pb-24 px-6 md:px-12 flex flex-col justify-end relative overflow-hidden">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
-             <img src={contactHero} alt="Office" className="w-full h-full object-cover opacity-[0.78] hero-video-grade" />
+             <img src={contactHero} alt="Coyne Environmental offices" className="w-full h-full object-cover opacity-[0.78] hero-video-grade" />
              <div className="absolute inset-0 hero-overlay-structured opacity-[0.95]"></div>
              <div className="absolute inset-0 pointer-events-none hero-brand-wash opacity-[0.42]" />
              <div className="absolute inset-y-0 left-0 w-[74%] hero-side-fade" />

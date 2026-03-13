@@ -47,9 +47,9 @@ export const Footer = () => {
           <div className="md:col-span-2">
             <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary mb-7">Socials</h4>
             <ul className="space-y-4 font-bold text-sm tracking-wide uppercase">
-              <li><a href="#" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">LinkedIn <ArrowUpRight size={14}/></a></li>
-              <li><a href="#" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">Instagram <ArrowUpRight size={14}/></a></li>
-              <li><a href="#" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">Twitter <ArrowUpRight size={14}/></a></li>
+              <li><a href="#" rel="noopener noreferrer" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">LinkedIn <ArrowUpRight size={14}/></a></li>
+              <li><a href="#" rel="noopener noreferrer" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">Instagram <ArrowUpRight size={14}/></a></li>
+              <li><a href="#" rel="noopener noreferrer" className="hover:text-primary transition-colors block w-fit link-underline flex items-center gap-2">Twitter <ArrowUpRight size={14}/></a></li>
             </ul>
           </div>
           

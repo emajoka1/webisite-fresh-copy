@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import {
@@ -10,11 +10,47 @@ import {
   sendQuoteForInternalReview,
 } from "./quote-workflow";
 
+// Simple in-memory rate limiter: max 5 requests per IP per 15 minutes
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+
+function rateLimit(req: Request, res: Response, next: NextFunction) {
+  const ip =
+    (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+    req.socket.remoteAddress ||
+    "unknown";
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now >= entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return next();
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) {
+    return res.status(429).json({
+      message: "Too many requests. Please wait before submitting again.",
+    });
+  }
+
+  entry.count += 1;
+  return next();
+}
+
+// Purge stale rate-limit entries every 30 minutes to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap.entries()) {
+    if (now >= entry.resetAt) rateLimitMap.delete(ip);
+  }
+}, 30 * 60 * 1000);
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  app.post("/api/quotes/request", async (req, res) => {
+  app.post("/api/quotes/request", rateLimit, async (req, res) => {
     const parsed = quoteRequestSchema.safeParse({
       ...req.body,
       hectares:
