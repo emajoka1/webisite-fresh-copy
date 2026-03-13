@@ -70,7 +70,7 @@ const operatingPrinciples = [
   {
     id: "04",
     title: "Clear ownership model",
-    desc: "Tight scopes, explicit accountability, and transparent timelines from mobilisation to discharge.",
+    desc: "Tight scopes, explicit accountability, and transparent timelines from delivery to discharge.",
     tag: "Execution Discipline",
   },
 ];
@@ -265,7 +265,7 @@ const WhyUs = () => {
           <span className="kicker text-primary block mb-8">The Coyne Method</span>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {[
-              { title: "Rapid mobilisation", desc: "Survey teams deployed quickly, with sequencing aligned to planning windows." },
+              { title: "Rapid delivery", desc: "Survey teams deployed quickly, with sequencing aligned to planning windows." },
               { title: "Commercially aware", desc: "Mitigation designed around buildability, value, and delivery constraints." },
               { title: "Metric-led strategy", desc: "BNG modelling that protects programme, land take, and viability." },
               { title: "Clear scope model", desc: "Defined deliverables, accountable timelines, and transparent commissioning." },
@@ -477,7 +477,7 @@ const Hero = ({ performanceMode = false }: { performanceMode?: boolean }) => {
                   </span>
                   <span className="hero-supporting-body">
                     Keep planning on programme with <span className="hero-supporting-strong">clear scope</span>,{" "}
-                    <span className="hero-supporting-strong">rapid mobilisation</span>, and{" "}
+                    <span className="hero-supporting-strong">rapid delivery</span>, and{" "}
                     <span className="hero-supporting-strong">decision-ready reporting</span>.
                   </span>
                 </p>
@@ -510,7 +510,7 @@ const Hero = ({ performanceMode = false }: { performanceMode?: boolean }) => {
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3" data-testid="grid-hero-proof">
                   {[
                     { k: "Next availability", v: nextAvailability },
-                    { k: "Mobilisation", v: "48 hours" },
+                    { k: "Delivery", v: "48 hours" },
                     { k: "Commission model", v: "Defined scope basis" },
                   ].map((item, i) => (
                     <div
