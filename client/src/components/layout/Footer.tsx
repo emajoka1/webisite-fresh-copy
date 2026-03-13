@@ -23,11 +23,11 @@ export const Footer = () => {
               <span className="display-title block text-[var(--color-signal)]">Delivery.</span>
             </h2>
             <a
-              href="mailto:hello@coyne.co.uk"
+              href="mailto:kcoyne@coyneenvironmental.co.uk"
               className="inline-flex items-center gap-3 text-xl md:text-3xl font-medium hover:text-primary transition-colors underline decoration-1 underline-offset-8"
               data-testid="link-footer-email"
             >
-              hello@coyne.co.uk
+              kcoyne@coyneenvironmental.co.uk
               <ArrowUpRight size={20} />
             </a>
           </div>

@@ -29,7 +29,7 @@ const FastTrackModule = () => {
       label: "PEA Survey",
       desc: "Early ecological appraisal and planning risk review",
       baseDays: 5,
-      outputs: ["Planning-ready baseline and constraints note", "Survey route for follow-on requirements"],
+      outputs: [],
       weight: 0,
     },
     pra: {
@@ -65,7 +65,7 @@ const FastTrackModule = () => {
     prePlanning: {
       label: "Pre-planning",
       detail: "Commissioning before submission",
-      deliverable: "Planning submission scope and sequencing note",
+      deliverable: "",
       weight: 1,
     },
     validation: {
@@ -92,7 +92,7 @@ const FastTrackModule = () => {
     edge: {
       label: "Settlement edge",
       detail: "Mixed baseline habitats",
-      deliverable: "Habitat transition strategy",
+      deliverable: "",
       weight: 1,
     },
     strategic: {

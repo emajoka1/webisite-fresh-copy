@@ -51,10 +51,7 @@ const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
     baseFee: 950,
     baseDays: 5,
     weight: 0,
-    defaultOutputs: [
-      "Planning-ready baseline and constraints note",
-      "Survey route for follow-on requirements",
-    ],
+    defaultOutputs: [],
   },
   pra: {
     label: "PRA (Bats)",
