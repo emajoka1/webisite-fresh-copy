@@ -40,7 +40,10 @@ type ContextConfig = {
 
 const COYNE_COMPANY_NAME = "Coyne Environmental";
 const COYNE_COMPANY_ADDRESS = "5 Philosophers Gate, Ashwell, SG7 5DL";
-const DEFAULT_REVIEW_EMAIL = "emajoka@coyneenvironmental.co.uk";
+const DEFAULT_REVIEW_EMAILS = [
+  "emajoka@coyneenvironmental.co.uk",
+  "emajoka@gmail.com",
+];
 
 const SERVICE_CONFIG: Record<ServiceKey, ServiceConfig> = {
   pea: {
@@ -143,7 +146,7 @@ export const resolveQuoteReviewRecipients = (rawRecipients?: string) => {
     .filter(Boolean);
 
   return Array.from(
-    new Set([DEFAULT_REVIEW_EMAIL, ...configuredRecipients]),
+    new Set([...DEFAULT_REVIEW_EMAILS, ...configuredRecipients]),
   );
 };
 
