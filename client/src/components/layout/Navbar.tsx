@@ -285,9 +285,7 @@ export const Navbar = () => {
                 <p data-testid="text-menu-founded">Established 2024</p>
             </div>
             <div className="flex gap-6 md:gap-8">
-                <a href="#" className="hover:text-secondary-foreground transition-colors hover-underline" data-testid="link-social-linkedin">LinkedIn</a>
-                <a href="#" className="hover:text-secondary-foreground transition-colors hover-underline" data-testid="link-social-instagram">Instagram</a>
-                <a href="#" className="hover:text-secondary-foreground transition-colors hover-underline" data-testid="link-social-twitter">Twitter</a>
+                <a href="https://www.linkedin.com/company/coyne-environmental/" target="_blank" rel="noopener noreferrer" className="hover:text-secondary-foreground transition-colors hover-underline" data-testid="link-social-linkedin">LinkedIn</a>
             </div>
         </div>
       </div>
