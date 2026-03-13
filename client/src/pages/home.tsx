@@ -222,6 +222,34 @@ const Metrics = () => {
   );
 };
 
+
+const Testimonials = () => (
+  <motion.section {...sectionReveal} className="bg-background text-foreground py-24 md:py-32 border-b border-foreground/10">
+    <div className="container mx-auto px-6 md:px-12">
+      <div className="mb-12"><span className="label-pill inline-flex text-primary border-primary/35">Client Voices</span></div>
+      <h2 className="text-[8vw] md:text-[4vw] leading-none tracking-[-0.04em] mb-12">
+        <span className="section-lead block normal-case">What our</span>
+        <span className="display-title block">clients say.</span>
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {q:"Coyne kept our planning application on track. Their 48-hour scope return meant we never missed a milestone.",a:"Development Director",c:"Regional Housebuilder"},
+          {q:"They understood our programme constraints from day one. The BNG modelling was completed before our consent deadline.",a:"Planning Manager",c:"Infrastructure Developer"},
+          {q:"A completely different model to consultancies we'd used before — commercially aware, fast, and always decision-ready.",a:"Senior Project Manager",c:"Land & Property Group"}
+        ].map((t,i)=>(
+          <motion.div key={i} className="bg-card border border-foreground/10 rounded-3xl p-8 flex flex-col gap-6" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{...revealTransition,delay:i*0.1}}>
+            <p className="tone-supporting text-base leading-relaxed flex-1">"{t.q}"</p>
+            <div className="border-t border-foreground/10 pt-4">
+              <p className="font-bold text-sm">{t.a}</p>
+              <p className="tone-whisper font-mono text-[10px] uppercase tracking-widest mt-1">{t.c}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </motion.section>
+);
+
 const WhyUs = () => {
   return (
     <motion.section
@@ -749,6 +777,38 @@ const SelectedWorks = () => {
   );
 };
 
+
+const InsightsPreview = () => (
+  <motion.section {...sectionReveal} className="py-24 md:py-32 bg-background text-foreground border-b border-foreground/10">
+    <div className="container mx-auto px-6 md:px-12">
+      <div className="flex items-center justify-between mb-12">
+        <span className="label-pill inline-flex text-primary border-primary/35">Insights</span>
+        <Link href="/insight" className="font-mono text-[10px] uppercase tracking-widest flex items-center gap-2 tone-whisper hover:text-primary transition-colors">
+          All insights <ArrowUpRight className="w-4 h-4"/>
+        </Link>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {title:"Aligning ecology with programme planning from day one",cat:"Strategy",date:"Feb 2026"},
+          {title:"BNG: What developers need to know before submitting planning",cat:"Biodiversity Net Gain",date:"Jan 2026"},
+          {title:"Protected species surveys: timing windows that protect your programme",cat:"Protected Species",date:"Dec 2025"}
+        ].map((item,i)=>(
+          <motion.article key={i} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{...revealTransition,delay:i*0.1}}>
+            <Link href="/insight" className="group block bg-card border border-foreground/10 rounded-3xl p-8 h-full lift-hover">
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-primary block mb-4">{item.cat}</span>
+              <h3 className="editorial-title text-xl leading-snug mb-6 group-hover:text-primary transition-colors">{item.title}</h3>
+              <div className="flex items-center justify-between">
+                <span className="tone-whisper font-mono text-xs uppercase tracking-widest">{item.date}</span>
+                <ArrowUpRight className="w-4 h-4 tone-whisper group-hover:text-primary transition-colors"/>
+              </div>
+            </Link>
+          </motion.article>
+        ))}
+      </div>
+    </div>
+  </motion.section>
+);
+
 export default function Home() {
   const [performanceMode, setPerformanceMode] = useState(false);
 
@@ -783,8 +843,10 @@ export default function Home() {
         <KineticStrip performanceMode={performanceMode} />
         <WhyUs />
         <Metrics />
+      <Testimonials />
         <ServiceList items={services} />
         <SelectedWorks />
+      <InsightsPreview />
 
         <motion.section
           {...sectionReveal}
